@@ -1,0 +1,16 @@
+# Compiled files
+*.o
+server
+
+# CLion/JetBrains IDE, vscode and direnv files
+.idea/
+.idea
+.direnv
+.vscode
+
+# Build directories
+build/
+cmake-build-debug/
+cmake-build-release/
+
+

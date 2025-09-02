@@ -17,7 +17,7 @@
         nativeBuildInputs = with pkgs; [
           gcc          # The specified C compiler
           gdb          # The GNU Debugger
-          make         # For running the Makefile
+          gnumake      # For running the Makefile
           pkg-config   # Manages library flags
           openssl.dev  # Provides the SHA256 library and headers
         ];

@@ -97,7 +97,7 @@ static void handle_connection(int client_socket) {
 
     // Create and send the response
     response_packet_t response;
-    response.answer = request.start; // For now we just send the start back as it is a placeholder
+    response.answer = request.start; // For now, we just send the start back as it is a placeholder
 
     const int response_size = 8;
     char response_buffer[response_size];

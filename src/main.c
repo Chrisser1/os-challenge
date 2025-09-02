@@ -31,7 +31,7 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    // Check 3: Was the number out of the valid port range (1-65535)?
+    // Was the number out of the valid port range (1-65535)?
     if (port_long < 1 || port_long > 65535) {
         fprintf(stderr, "Error: Port number must be between 1 and 65535.\n");
         return 1;

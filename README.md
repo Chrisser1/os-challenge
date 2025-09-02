@@ -5,8 +5,8 @@
 The goal for the milestone is to create a server that works correctly and achieves 100% reliability. Performance is not the main focus yet.
 
 - [ ] **1. TCP Server Basics:**
-    - [ ] Implement a basic TCP server that can `listen` for incoming connections on a specified port.
-    - [ ] Learn to `accept` a new connection from the client.
+    - [X] Implement a basic TCP server that can `listen` for incoming connections on a specified port.
+    - [X] Learn to `accept` a new connection from the client.
     - [ ] Use `read()` or `recv()` to receive the 49-byte request packet from the client.
     - [ ] Use `write()` or `send()` to send the 8-byte response packet back.
     - [ ] Close the connection after each request is handled.

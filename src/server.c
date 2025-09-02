@@ -10,6 +10,7 @@
 #include <netinet/in.h>
 
 #include "server.h"
+#include "protocol.h"
 
 void start_server(int port) {
     int server_fd, new_socket;
@@ -56,14 +57,61 @@ void start_server(int port) {
             perror("accept failed");
             exit(EXIT_FAILURE);
         }
-
-        printf("Connection established.\n");
-        // TODO: Read the 49-byte request from the client using read() or recv().
-        // TODO: Send the 8-byte response back using write() or send().
-
-        // Close the connection
-        close(new_socket);
-        printf("Connection closed. Waiting for next connection...\n");
+        handle_connection(new_socket);
     }
+}
+
+static void handle_connection(int client_socket) {
+    printf("Connection accepted, handling client...\n");
+
+    const int request_size = 49;
+    char request_buffer[request_size];
+    ssize_t bytes_read;
+    ssize_t total_bytes_read = 0;
+
+    while (total_bytes_read < request_size) {
+        bytes_read = read(client_socket, request_buffer + total_bytes_read, request_size - total_bytes_read);
+
+        // Check for invalid bytes
+        if (bytes_read <= 0) {
+            if (bytes_read == -1) perror("read failed");
+            else printf("Client disconnected unexpectedly. \n");
+            close(client_socket);
+            return;
+        }
+
+        total_bytes_read += bytes_read;
+    }
+
+    printf("Successfully received %zd bytes from client.\n", total_bytes_read);
+
+    // Parse a struct to hold the parsed data
+    request_packet_t request;
+    parse_request(request_buffer, &request);
+
+    // Print the values to confirm they are being parsed and converted correctly.
+    printf("Received Request: start = %lu, end = %lu, priority = %u\n",
+           request.start, request.end, request.p);
+
+    // TODO: Implement the brute-force hashing logic to find the real answer.
+
+    // Create and send the response
+    response_packet_t response;
+    response.answer = request.start; // For now we just send the start back as it is a placeholder
+
+    const int response_size = 8;
+    char response_buffer[response_size];
+    create_response(&response, response_buffer);
+
+    size_t bytes_written = write(client_socket, response_buffer, response_size);
+
+    if (bytes_written == -1) {
+        perror("write failed");
+    } else {
+        printf("Successfully sent response. Answer = %lu\n", response.answer);
+    }
+
+    close(client_socket);
+    printf("Connection closed. Waiting for next connection...\n");
 }
 

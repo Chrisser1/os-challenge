@@ -13,16 +13,16 @@ include_directories(src)
 
 add_executable(server
         src/main.c
-        src/server.c)
+        src/server.c
+        src/protocol.c
+        src/protocol.h)
 
 target_include_directories(server PRIVATE
     src
 )
 
 target_link_libraries(server PRIVATE
-        OpenSSL::SSL
         OpenSSL::Crypto
-        Threads::Threads
 )
 
 # Place the final "server" executable in the project's root directory

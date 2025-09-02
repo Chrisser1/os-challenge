@@ -7,13 +7,13 @@ The goal for the milestone is to create a server that works correctly and achiev
 - [ ] **1. TCP Server Basics:**
     - [X] Implement a basic TCP server that can `listen` for incoming connections on a specified port.
     - [X] Learn to `accept` a new connection from the client.
-    - [ ] Use `read()` or `recv()` to receive the 49-byte request packet from the client.
-    - [ ] Use `write()` or `send()` to send the 8-byte response packet back.
-    - [ ] Close the connection after each request is handled.
+    - [X] Use `read()` or `recv()` to receive the 49-byte request packet from the client.
+    - [X] Use `write()` or `send()` to send the 8-byte response packet back.
+    - [X] Close the connection after each request is handled.
 
-- [ ] **2. Packet Handling:**
-    - [ ] Carefully parse the incoming request packet fields: `hash` (32 bytes), `start` (8 bytes), `end` (8 bytes), and `priority` (1 byte).
-    - [ ] Pay close attention to **byte order**. The `start` and `end` fields are big-endian (network byte order) and need to be converted to the host's byte order (e.g., using `be64toh`).
+- [X] **2. Packet Handling:**
+    - [X] Carefully parse the incoming request packet fields: `hash` (32 bytes), `start` (8 bytes), `end` (8 bytes), and `priority` (1 byte).
+    - [X] Pay close attention to **byte order**. The `start` and `end` fields are big-endian (network byte order) and need to be converted to the host's byte order (e.g., using `be64toh`).
 
 - [ ] **3. Implement Reverse Hashing Logic:**
     - [ ] Set up a loop that iterates from `start` to `end`.

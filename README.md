@@ -28,8 +28,10 @@ The goal for the milestone is to create a server that works correctly and achiev
 
 - [X] **5. Testing and Debugging:**
     - [X] Use the provided `client` tool for testing.
-    - [X] Start with simple, deterministic parameters to debug, for example: `difficulty`=1. This makes the hash easy to find.
-    - [X] Verify that your server returns the correct answer and achieves 100% reliability with the `run-client.sh` and `run-client-milestone.sh` scripts.
+    - [X] Start with simple, deterministic parameters to debug, e.g.: `difficulty`=1.
+    - [X] Verify that the server returns the correct answer and achieves 100% reliability with the `run-client.sh` and `run-client-milestone.sh` scripts.
 
-- [ ] **6. Handle Multiple Connections:**
-    - [ ] The basic server can only handle one client at a time. The next step is to handle multiple concurrent requests. A simple approach for the milestone could be an iterative server that handles one connection completely before accepting the next, or you can begin exploring multi-threading/multi-processing.
+  - [ ] **6. Handle Multiple Connections:**
+    - [ ] Measure the speed of the program running on a single thread and document the test.
+    - [ ] Create a way to multiple concurrent requests.
+    - [ ] Test the code again and document if it is better or worse

@@ -23,11 +23,11 @@ PORT=5003
 # Seed for the random number generator (using a fixed seed makes tests repeatable)
 SEED=1234
 # Total number of requests per run
-TOTAL=1000
+TOTAL=100
 # Start value for the number range
 START=1
 # Difficulty
-DIFFICULTY=10000
+DIFFICULTY=100000
 # Repetition probability
 REP_PROB_PERCENT=0
 # Delay between requests in microseconds (lower value = more stress on the server)
@@ -36,7 +36,7 @@ DELAY_US=10000
 PRIO_LAMBDA=0
 
 # Number of times to run the test to get an average
-NUM_RUNS=5
+NUM_RUNS=50
 
 # --- Script Logic ---
 TOTAL_SCORE=0
@@ -65,6 +65,17 @@ do
 
     # Check if the client run was successful by looking for the "Results" line
     if [[ "$CLIENT_OUTPUT" == *"Results:"* ]]; then
+        RELIABILITY=$(echo "$CLIENT_OUTPUT" | grep "Results:" | awk '{print $2}')
+        # Check if reliability is not 100.00
+        if [ "$RELIABILITY" != "100.00" ]; then
+            echo "  Run $i FAILED: Reliability was $RELIABILITY% (not 100%)."
+            echo "  Client output:"
+            echo "$CLIENT_OUTPUT"
+            echo "------------------------------------"
+            echo "Benchmark aborted due to incorrect answers."
+            exit 1
+        fi
+
         # Extract the score (the 3rd field in the "Results:" line) using awk
         SCORE=$(echo "$CLIENT_OUTPUT" | grep "Results:" | awk '{print $3}')
         echo "  Run $i Score: $SCORE"

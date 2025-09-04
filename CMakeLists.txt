@@ -15,7 +15,10 @@ add_executable(server
         src/main.c
         src/server.c
         src/protocol.c
-        src/protocol.h)
+        src/protocol.h
+        src/hashing.c
+        src/hashing.h
+        src/common/logging.h)
 
 target_include_directories(server PRIVATE
     src

@@ -4,13 +4,14 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include <unistd.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 
 #include "server.h"
+#include "hashing.h"
 #include "protocol.h"
+#include "common/logging.h"
 
 void start_server(int port) {
     int server_fd, new_socket;
@@ -62,7 +63,7 @@ void start_server(int port) {
 }
 
 static void handle_connection(int client_socket) {
-    printf("Connection accepted, handling client...\n");
+    LOG_DEBUG("Connection accepted, handling client...");
 
     const int request_size = 49;
     char request_buffer[request_size];
@@ -75,7 +76,7 @@ static void handle_connection(int client_socket) {
         // Check for invalid bytes
         if (bytes_read <= 0) {
             if (bytes_read == -1) perror("read failed");
-            else printf("Client disconnected unexpectedly. \n");
+            else LOG_DEBUG("Client disconnected unexpectedly. \n");
             close(client_socket);
             return;
         }
@@ -83,21 +84,19 @@ static void handle_connection(int client_socket) {
         total_bytes_read += bytes_read;
     }
 
-    printf("Successfully received %zd bytes from client.\n", total_bytes_read);
+    LOG_DEBUG("Successfully received %zd bytes from client.\n", total_bytes_read);
 
     // Parse a struct to hold the parsed data
     request_packet_t request;
     parse_request(request_buffer, &request);
 
     // Print the values to confirm they are being parsed and converted correctly.
-    printf("Received Request: start = %lu, end = %lu, priority = %u\n",
+    LOG_DEBUG("Received Request: start = %lu, end = %lu, priority = %u\n",
            request.start, request.end, request.p);
-
-    // TODO: Implement the brute-force hashing logic to find the real answer.
 
     // Create and send the response
     response_packet_t response;
-    response.answer = request.start; // For now, we just send the start back as it is a placeholder
+    response.answer = reverse_hashing(&request);
 
     const int response_size = 8;
     char response_buffer[response_size];
@@ -108,10 +107,10 @@ static void handle_connection(int client_socket) {
     if (bytes_written == -1) {
         perror("write failed");
     } else {
-        printf("Successfully sent response. Answer = %lu\n", response.answer);
+        LOG_DEBUG("Successfully sent response. Answer = %lu\n", response.answer);
     }
 
     close(client_socket);
-    printf("Connection closed. Waiting for next connection...\n");
+    LOG_DEBUG("Connection closed. Waiting for next connection...\n");
 }
 

@@ -32,6 +32,6 @@ The goal for the milestone is to create a server that works correctly and achiev
     - [X] Verify that the server returns the correct answer and achieves 100% reliability with the `run-client.sh` and `run-client-milestone.sh` scripts.
 
   - [ ] **6. Handle Multiple Connections:**
-    - [ ] Measure the speed of the program running on a single thread and document the test.
+    - [X] Measure the speed of the program running on a single thread and document the test.
     - [ ] Create a way to multiple concurrent requests.
     - [ ] Test the code again and document if it is better or worse

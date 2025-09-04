@@ -23,8 +23,8 @@ void parse_request(const char *buffer, request_packet_t *packet) {
 
 void create_response(const response_packet_t *packet, char *buffer) {
     // Convert from Host to Network Byte Order
-    uint64_t answer_in_network_order = htobe64(packet->answer);
+    const uint64_t answer_in_network_order = htobe64(packet->answer);
 
-    // Copy the data to the bufferSuccessbe64tohfully sent response. Answer
+    // Copy the data to the buffer
     memcpy(buffer, &answer_in_network_order, 8);
 }

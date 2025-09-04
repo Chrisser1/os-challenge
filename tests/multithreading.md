@@ -36,6 +36,6 @@ Average Score: 3047.66
 
 ### Test (Multi-Threaded)
 #### Test 1:
-Average Score: 
+Average Score: 2981.48
 #### Test 2:
-Average Score:
+Average Score: 2844.14

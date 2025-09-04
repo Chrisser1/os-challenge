@@ -31,7 +31,7 @@ DIFFICULTY=100000
 # Repetition probability
 REP_PROB_PERCENT=0
 # Delay between requests in microseconds (lower value = more stress on the server)
-DELAY_US=10000
+DELAY_US=1000
 # Lambda for priority levels (0 = priorities disabled)
 PRIO_LAMBDA=0
 

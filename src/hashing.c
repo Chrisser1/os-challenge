@@ -9,7 +9,7 @@
 #include <endian.h>
 #include <string.h>
 
-uint64_t reverse_hashing(request_packet_t *request) {
+uint64_t reverse_hashing(const request_packet_t *request) {
     for (uint64_t i = request->start; i < request->end; ++i) {
 
         // The project requires the input to the hash function to be a 64-bit

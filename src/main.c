@@ -16,18 +16,18 @@ int main(int argc, char *argv[]) {
     }
 
     // Safely Convert Port Argument to Integer using strtol
-    char *endptr;
+    char *end_ptr;
     errno = 0;
 
-    long port_long = strtol(argv[1], &endptr, 10);
+    const long port_long = strtol(argv[1], &end_ptr, 10);
 
-    if (endptr == argv[1]) {
+    if (end_ptr == argv[1]) {
         fprintf(stderr, "Error: Invalid port. No digits were found \n");
         return 1;
     }
 
-    if (*endptr != '\0') {
-        fprintf(stderr, "Error: Invalid port. Trailing characters are not allowed: %s\n", endptr);
+    if (*end_ptr != '\0') {
+        fprintf(stderr, "Error: Invalid port. Trailing characters are not allowed: %s\n", end_ptr);
         return 1;
     }
 
@@ -37,7 +37,7 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    int port = (int)port_long;
+    const int port = (int)port_long;
 
     start_server(port);
 

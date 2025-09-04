@@ -18,7 +18,9 @@ add_executable(server
         src/protocol.h
         src/hashing.c
         src/hashing.h
-        src/common/logging.h)
+        src/common/logging.h
+        src/thread-pool.c
+        src/thread-pool.h)
 
 target_include_directories(server PRIVATE
     src
@@ -26,6 +28,7 @@ target_include_directories(server PRIVATE
 
 target_link_libraries(server PRIVATE
         OpenSSL::Crypto
+        Threads::Threads
 )
 
 # Place the final "server" executable in the project's root directory

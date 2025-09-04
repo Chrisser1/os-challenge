@@ -11,12 +11,15 @@
 #include "server.h"
 #include "hashing.h"
 #include "protocol.h"
+#include "thread-pool.h"
 #include "common/logging.h"
 
-void start_server(int port) {
+#define NUM_WORKER_THREADS 16
+
+void start_server(const int port) {
     int server_fd, new_socket;
     struct sockaddr_in address;
-    int addrlen = sizeof(address);
+    int addr_len = sizeof(address);
 
     // Create a socket
     // AF_INET: Address family for IPv4
@@ -47,6 +50,13 @@ void start_server(int port) {
         exit(EXIT_FAILURE);
     }
 
+    // Create the thread pool
+    ThreadPool *thread_pool = thread_pool_create(NUM_WORKER_THREADS);
+    if (thread_pool == NULL) {
+        fprintf(stderr, "Failed to create thread pool. Exiting.\n");
+        exit(EXIT_FAILURE);
+    }
+
     printf("Server is listening on port %d. Waiting for connections...\n", port);
 
     // Main server loop
@@ -54,16 +64,19 @@ void start_server(int port) {
         // Accept a Connection
         // accept() is a blocking call. It will wait here until a client connects.
         // It returns a new socket file descriptor for the accepted connection.
-        if ((new_socket = accept(server_fd, (struct sockaddr *)&address, (socklen_t*)&addrlen)) < 0) {
+        if ((new_socket = accept(server_fd, (struct sockaddr *)&address, (socklen_t*)&addr_len)) < 0) {
             perror("accept failed");
             exit(EXIT_FAILURE);
         }
-        handle_connection(new_socket);
+
+        LOG_DEBUG("Connection accepted on socket %d. Adding to task queue.", new_socket);
+
+        thread_pool_add_task(thread_pool, new_socket);
     }
 }
 
-static void handle_connection(int client_socket) {
-    LOG_DEBUG("Connection accepted, handling client...");
+void handle_connection(const int client_socket) {
+    LOG_DEBUG("Worker thread is handling client on socket %d", client_socket);
 
     const int request_size = 49;
     char request_buffer[request_size];
@@ -76,7 +89,9 @@ static void handle_connection(int client_socket) {
         // Check for invalid bytes
         if (bytes_read <= 0) {
             if (bytes_read == -1) perror("read failed");
-            else LOG_DEBUG("Client disconnected unexpectedly. \n");
+            else {
+                LOG_DEBUG("Client disconnected unexpectedly on socket %d.", client_socket);
+            }
             close(client_socket);
             return;
         }
@@ -84,15 +99,14 @@ static void handle_connection(int client_socket) {
         total_bytes_read += bytes_read;
     }
 
-    LOG_DEBUG("Successfully received %zd bytes from client.\n", total_bytes_read);
+    LOG_DEBUG("Successfully received %zd bytes from client on socket %d.", total_bytes_read, client_socket);
 
     // Parse a struct to hold the parsed data
     request_packet_t request;
     parse_request(request_buffer, &request);
 
     // Print the values to confirm they are being parsed and converted correctly.
-    LOG_DEBUG("Received Request: start = %lu, end = %lu, priority = %u\n",
-           request.start, request.end, request.p);
+    LOG_DEBUG("Received Request: start=%lu, end=%lu, socket=%d", request.start, request.end, client_socket);
 
     // Create and send the response
     response_packet_t response;
@@ -102,15 +116,15 @@ static void handle_connection(int client_socket) {
     char response_buffer[response_size];
     create_response(&response, response_buffer);
 
-    size_t bytes_written = write(client_socket, response_buffer, response_size);
+    const ssize_t bytes_written = write(client_socket, response_buffer, response_size);
 
     if (bytes_written == -1) {
         perror("write failed");
     } else {
-        LOG_DEBUG("Successfully sent response. Answer = %lu\n", response.answer);
+        LOG_DEBUG("Successfully sent response. Answer=%lu, socket=%d", response.answer, client_socket);
     }
 
     close(client_socket);
-    LOG_DEBUG("Connection closed. Waiting for next connection...\n");
+    LOG_DEBUG("Connection closed on socket %d.", client_socket);
 }
 

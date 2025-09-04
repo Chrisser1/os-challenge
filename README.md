@@ -31,7 +31,19 @@ The goal for the milestone is to create a server that works correctly and achiev
     - [X] Start with simple, deterministic parameters to debug, e.g.: `difficulty`=1.
     - [X] Verify that the server returns the correct answer and achieves 100% reliability with the `run-client.sh` and `run-client-milestone.sh` scripts.
 
-  - [ ] **6. Handle Multiple Connections:**
-    - [X] Measure the speed of the program running on a single thread and document the test.
-    - [ ] Create a way to multiple concurrent requests.
-    - [ ] Test the code again and document if it is better or worse
+- [X] **6. Handle Multiple Connections:**
+  - [X] Measure the speed of the program running on a single thread and document the test.
+  - [X] Create a way to multiple concurrent requests.
+  - [X] Test the code again and document if it is better or worse
+
+## Phase 2: Performance Optimization
+- [ ] **7. Implement Caching Mechanism:**
+  - [ ] Design and implement a thread-safe hash map to store `(hash, answer)` pairs.
+  - [ ] Modify the `handle_connection` logic to check the cache before performing the reverse-hashing search.
+  - [ ] On a "cache miss," add the newly computed answer to the cache.
+  - [ ] Run the benchmark tests as defined in `experiment-caching.md` to measure the performance impact.
+
+- [ ] **8. Explore Vectorization (SIMD):**
+  - [ ] Research how to use CPU SIMD intrinsics (like AVX or SSE) in C.
+  - [ ] Create a new experiment to rewrite the core hashing loop to test multiple numbers simultaneously.
+  - [ ] Measure the performance gain of the vectorized hashing function compared to the standard loop.

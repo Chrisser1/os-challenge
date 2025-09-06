@@ -31,7 +31,7 @@ To measure the impact of prioritization, we must enable priority levels in the c
 
 ### Baseline (Thread Pool with FIFO Queue)
 
-* **Average Score**: `669014.76`
+* **Average Score**: `4074418.12`
 
 ### Test (Thread Pool with Priority Queue)
 

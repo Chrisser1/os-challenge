@@ -7,6 +7,9 @@
 
 #include <stdint.h>
 
+// The size of the request packet in bytes.
+#define REQUEST_PACKET_SIZE 49
+
 // This struct directly maps to the 49-byte request packet format.
 // Using __attribute__((__packed__)) tells the compiler not to add any padding.
 // between the fields, ensuring its memory layout is exactly as specified.

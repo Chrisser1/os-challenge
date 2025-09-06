@@ -7,6 +7,8 @@
 
 #include <pthread.h>
 
+#include "protocol.h"
+
 // Define the priority levels
 #define PRIORITY_MIN 1
 #define PRIORITY_MAX 16
@@ -15,6 +17,7 @@
 // This is also a node in a singly linked list.
 typedef struct Task {
     int client_socket;
+    request_packet_t request;
     struct Task *next;
 } Task;
 
@@ -47,9 +50,9 @@ ThreadPool* thread_pool_create(int thread_count);
  *
  * @param thread_pool The thread pool.
  * @param client_socket The client socket file descriptor to be handled.
- * @param priority The priority of the task
+ * @param request The request from the client socket
  */
-void thread_pool_add_task(ThreadPool* thread_pool, int client_socket, int priority);
+void thread_pool_add_task(ThreadPool* thread_pool, int client_socket, const request_packet_t *request);
 
 /**
  * @brief Gracefully destroy the thread pool, waiting for threads to finish.

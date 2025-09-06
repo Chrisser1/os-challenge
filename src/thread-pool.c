@@ -6,6 +6,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
 
 #include "server.h"
@@ -64,13 +65,7 @@ ThreadPool * thread_pool_create(const int thread_count) {
     return thread_pool;
 }
 
-void thread_pool_add_task(ThreadPool *thread_pool, const int client_socket, const int priority) {
-    // Validate the incoming priority
-    if (priority < PRIORITY_MIN || priority > PRIORITY_MAX) {
-        LOG_DEBUG("Invalid priority level %d received. Dropping task.", priority);
-        close(client_socket);
-    }
-
+void thread_pool_add_task(ThreadPool *thread_pool, const int client_socket, const request_packet_t *request) {
     // Allocate the task
     Task *new_task = malloc(sizeof(Task));
     if (new_task == NULL) {
@@ -79,12 +74,14 @@ void thread_pool_add_task(ThreadPool *thread_pool, const int client_socket, cons
     }
     new_task->client_socket = client_socket;
     new_task->next = NULL;
+    // Copy the struck into the task
+    memcpy(&new_task->request, request, sizeof(request_packet_t));
 
     // Lock the mutex to safely add the task to the queue
     pthread_mutex_lock(&thread_pool->queue_mutex);
 
     // Get the tasks priority queue
-    TaskQueue *task_queue = &thread_pool->priority_queues[priority - 1]; // Input is 1-16
+    TaskQueue *task_queue = &thread_pool->priority_queues[request->p - 1]; // Input is 1-16
 
     // Add to the tail of the queue
     if (task_queue->tail == NULL) {
@@ -154,16 +151,15 @@ static void* worker_thread_function(void *arg) {
         }
 
         // Go through the queues based on priority
+        task = NULL;
         for (int i = PRIORITY_MAX - 1; i >= 0; i--) {
             if (thread_pool->priority_queues[i].head != NULL) {
                 task = thread_pool->priority_queues[i].head;
                 thread_pool->priority_queues[i].head = task->next;
-
-                // If this was the last task in the queue update the tail
                 if (thread_pool->priority_queues[i].head == NULL) {
                     thread_pool->priority_queues[i].tail = NULL;
                 }
-                break; // Stop searching as the task has been found
+                break;
             }
         }
 
@@ -172,9 +168,8 @@ static void* worker_thread_function(void *arg) {
 
         // If there is a task, then handle the connection
         if (task != NULL) {
-            handle_connection(task->client_socket);
+            handle_connection(task->client_socket, &task->request);
             free(task);
-            task = NULL; // Reset task for next loop
         }
     }
 }

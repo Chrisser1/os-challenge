@@ -7,6 +7,8 @@
 
 #include "protocol.h"
 
+#include <stdio.h>
+
 void parse_request(const char *buffer, request_packet_t *packet) {
     // Copy Data from buffer to struct
     memcpy(packet->hash, buffer, 32);

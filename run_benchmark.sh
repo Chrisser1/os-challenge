@@ -32,8 +32,8 @@ DIFFICULTY=100000
 REP_PROB_PERCENT=0
 # Delay between requests in microseconds (lower value = more stress on the server)
 DELAY_US=1000
-# Lambda for priority levels (0 = priorities disabled)
-PRIO_LAMBDA=1
+# Lambda for priority levels (0 = priorities disabled) MAX = 16
+PRIO_LAMBDA=16
 
 # Number of times to run the test to get an average
 NUM_RUNS=50

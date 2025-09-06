@@ -25,7 +25,7 @@ To measure the impact of prioritization, we must enable priority levels in the c
 * **Total Requests (`TOTAL`)**: `200`
 * **Difficulty (`DIFFICULTY`)**: `100000`
 * **Request Delay (`DELAY_US`)**: `1000` (to ensure a queue builds up)
-* **Priority Lambda (`PRIO_LAMBDA`)**: `1.0` (enables priority generation)
+* **Priority Lambda (`PRIO_LAMBDA`)**: `16.0`
 
 ## 4. Results
 
@@ -35,4 +35,4 @@ To measure the impact of prioritization, we must enable priority levels in the c
 
 ### Test (Thread Pool with Priority Queue)
 
-* **Average Score**: `[TODO: Fill in after running the test]`
+* **Average Score**: `3028.52`

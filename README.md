@@ -42,13 +42,21 @@ The goal for the milestone is to create a server that works correctly and achiev
   - [ ] Test again and compare.
 
 ## Phase 2: Performance Optimization
-- [ ] **8. Implement Caching Mechanism:**
+- [ ] **8. Explore Multi-Stage Architecture:**
+  - [ ] Design and implement a new architecture with specialized thread pools.
+  - [ ] Acceptor Thread: A single thread whose only job is to `accept()` new connections and pass the socket to a queue.
+  - [ ] Dispatcher Threads: A small pool of threads that read and parse requests from the acceptor's queue and place them into the worker pool's priority queues.
+  - [ ] Worker Threads: The existing thread pool that now only performs the computation (`reverse_hashing`).
+  - [ ] Create a new experiment to measure if this separation provides a notable performance improvement over the current model.
+- 
+- [ ] **9. Implement Caching Mechanism:**
   - [ ] Design and implement a thread-safe hash map to store `(hash, answer)` pairs.
   - [ ] Modify the `handle_connection` logic to check the cache before performing the reverse-hashing search.
   - [ ] On a "cache miss," add the newly computed answer to the cache.
   - [ ] Run the benchmark tests as defined in `experiment-caching.md` to measure the performance impact.
 
-- [ ] **9. Explore Vectorization (SIMD):**
+- [ ] **10. Explore Vectorization (SIMD):**
   - [ ] Research how to use CPU SIMD intrinsics (like AVX or SSE) in C.
   - [ ] Create a new experiment to rewrite the core hashing loop to test multiple numbers simultaneously.
   - [ ] Measure the performance gain of the vectorized hashing function compared to the standard loop.
+

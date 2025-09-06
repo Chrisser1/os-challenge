@@ -23,16 +23,16 @@ To measure the impact of prioritization, we must enable priority levels in the c
 
 * **Number of Runs (`NUM_RUNS`)**: `50`
 * **Total Requests (`TOTAL`)**: `200`
-* **Difficulty (`DIFFICULTY`)**: `100000`
+* **Difficulty (`DIFFICULTY`)**: `1000000`
 * **Request Delay (`DELAY_US`)**: `1000` (to ensure a queue builds up)
-* **Priority Lambda (`PRIO_LAMBDA`)**: `16.0`
+* **Priority Lambda (`PRIO_LAMBDA`)**: `0.1`
 
 ## 4. Results
 
 ### Baseline (Thread Pool with FIFO Queue)
 
-* **Average Score**: `4438.72`
+* **Average Score**: `669014.76`
 
 ### Test (Thread Pool with Priority Queue)
 
-* **Average Score**: `3028.52`
+* **Average Score**: `3347645.20`

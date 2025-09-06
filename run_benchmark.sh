@@ -23,17 +23,17 @@ PORT=5003
 # Seed for the random number generator (using a fixed seed makes tests repeatable)
 SEED=1234
 # Total number of requests per run
-TOTAL=200
+TOTAL=500
 # Start value for the number range
 START=1
 # Difficulty
-DIFFICULTY=1000000
+DIFFICULTY=50000
 # Repetition probability
 REP_PROB_PERCENT=0
 # Delay between requests in microseconds (lower value = more stress on the server)
-DELAY_US=1000
+DELAY_US=100
 # Lambda for priority levels (0 = priorities disabled) MAX = 16
-PRIO_LAMBDA=0.1
+PRIO_LAMBDA=1.0
 
 # Number of times to run the test to get an average
 NUM_RUNS=50

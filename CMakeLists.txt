@@ -20,7 +20,9 @@ add_executable(server
         src/hashing.h
         src/common/logging.h
         src/thread-pool.c
-        src/thread-pool.h)
+        src/thread-pool.h
+        src/dispatcher_queue.c
+        src/dispatcher_queue.h)
 
 target_include_directories(server PRIVATE
     src

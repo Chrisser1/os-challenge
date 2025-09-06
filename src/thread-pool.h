@@ -7,22 +7,32 @@
 
 #include <pthread.h>
 
+// Define the priority levels
+#define PRIORITY_MIN 1
+#define PRIORITY_MAX 16
+
 // Represent a single task in the queue.
 // This is also a node in a singly linked list.
 typedef struct Task {
     int client_socket;
-    struct Task* next;
+    struct Task *next;
 } Task;
 
+// A simple struct to hold the head and tail of one queue
 typedef struct {
-    pthread_t *threads;          // Array of worker threads
-    Task *task_queue_head;       // Head of the task queue
-    Task *task_queue_tail;       // Tail of the task queue
-    pthread_mutex_t queue_mutex; // Mutex to protect the queue
-    pthread_cond_t queue_cond;   // Condition variable to signal new tasks
-    int shutdown;                // Flag to signal threads to exit
-    int thread_count;            // Number of threads in the pool
+    Task* head;
+    Task* tail;
+} TaskQueue;
+
+typedef struct {
+    pthread_t *threads;                      // Array of worker threads
+    TaskQueue priority_queues[PRIORITY_MAX]; // An array of 16 queue that represent priority 1-16
+    pthread_mutex_t queue_mutex;             // Mutex to protect the queue
+    pthread_cond_t queue_cond;               // Condition variable to signal new tasks
+    int shutdown;                            // Flag to signal threads to exit
+    int thread_count;                        // Number of threads in the pool
 } ThreadPool;
+
 
 /**
  * @brief Creates and initializes a thread pool.
@@ -37,8 +47,9 @@ ThreadPool* thread_pool_create(int thread_count);
  *
  * @param thread_pool The thread pool.
  * @param client_socket The client socket file descriptor to be handled.
+ * @param priority The priority of the task
  */
-void thread_pool_add_task(ThreadPool* thread_pool, int client_socket);
+void thread_pool_add_task(ThreadPool* thread_pool, int client_socket, int priority);
 
 /**
  * @brief Gracefully destroy the thread pool, waiting for threads to finish.

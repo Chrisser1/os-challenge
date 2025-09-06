@@ -34,16 +34,21 @@ The goal for the milestone is to create a server that works correctly and achiev
 - [X] **6. Handle Multiple Connections:**
   - [X] Measure the speed of the program running on a single thread and document the test.
   - [X] Create a way to multiple concurrent requests.
-  - [X] Test the code again and document if it is better or worse
+  - [X] Test the code again and document if it is better or worse.
+
+- [ ] **7. Expand the multiprocess to handle priority:**
+  - [ ] Test with different priority levels and write it down.
+  - [ ] Create a way to handle priorities.
+  - [ ] Test again and compare.
 
 ## Phase 2: Performance Optimization
-- [ ] **7. Implement Caching Mechanism:**
+- [ ] **8. Implement Caching Mechanism:**
   - [ ] Design and implement a thread-safe hash map to store `(hash, answer)` pairs.
   - [ ] Modify the `handle_connection` logic to check the cache before performing the reverse-hashing search.
   - [ ] On a "cache miss," add the newly computed answer to the cache.
   - [ ] Run the benchmark tests as defined in `experiment-caching.md` to measure the performance impact.
 
-- [ ] **8. Explore Vectorization (SIMD):**
+- [ ] **9. Explore Vectorization (SIMD):**
   - [ ] Research how to use CPU SIMD intrinsics (like AVX or SSE) in C.
   - [ ] Create a new experiment to rewrite the core hashing loop to test multiple numbers simultaneously.
   - [ ] Measure the performance gain of the vectorized hashing function compared to the standard loop.

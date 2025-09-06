@@ -14,28 +14,28 @@ There will also be another test that has a higher delay as a default that doesn'
 
 ### Tests
 #### TEST 1 (low delay)
-* Number of Runs (NUM_RUNS): 50
-* Total Requests (TOTAL): 100
-* Difficulty (DIFFICULTY): 100000
-* Request Delay (DELAY_US): 1000
+* Number of Runs (`NUM_RUNS`): `50`
+* Total Requests (`TOTAL`): `100`
+* Difficulty (`DIFFICULTY`): `100000`
+* Request Delay (`DELAY_US`): `1000`
 
 #### TEST 2 (large delay)
-* Number of Runs (NUM_RUNS): 50
-* Total Requests (TOTAL): 100
-* Difficulty (DIFFICULTY): 100000
-* Request Delay (DELAY_US): 10000
+* Number of Runs (`NUM_RUNS`): `50`
+* Total Requests (`TOTAL`): `100`
+* Difficulty (`DIFFICULTY`): `100000`
+* Request Delay (`DELAY_US`): `10000`
 
 
 ## 4. Results
 
 ### Baseline (Single-Threaded)
 #### Test 1:
-Average Score: 986433.74
+Average Score: `986433.74`
 #### Test 2:
-Average Score: 3047.66
+Average Score: `3047.66`
 
 ### Test (Multi-Threaded)
 #### Test 1:
-Average Score: 2981.48
+Average Score: `2981.48`
 #### Test 2:
-Average Score: 2844.14
+Average Score: `2844.14`

@@ -6,46 +6,23 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 #include "server.h"
 #include "common/logging.h"
 
-static void* worker_thread_function(void *arg) {
-    ThreadPool *thread_pool = arg;
-    Task *task;
+// Forward declaration is important for the thread creation
+static void* worker_thread_function(void *arg);
 
-    while (1) {
-        // Lock the mutex to safely access the task queue
-        pthread_mutex_lock(&thread_pool->queue_mutex);
-
-        // Wait on th condition variable if the queue is empty and shutdown is not requested
-        while (thread_pool->task_queue_head == NULL && !thread_pool->shutdown) {
-            pthread_cond_wait(&thread_pool->queue_cond, &thread_pool->queue_mutex); // Auto unlocks the mutex
-        }
-
-        // If shutdown is requested and the queue is empty, exit the thread.
-        if (thread_pool->shutdown && thread_pool->task_queue_head == NULL) {
-            pthread_mutex_unlock(&thread_pool->queue_mutex);
-            // This will stop the worker thread and exit the loop
-            pthread_exit(NULL);
-        }
-
-        // Take a task from the head of the queue
-        task = thread_pool->task_queue_head;
-        thread_pool->task_queue_head = thread_pool->task_queue_head->next;
-        if (thread_pool->task_queue_head == NULL) {
-            thread_pool->task_queue_tail = NULL;
-        }
-
-        // Unluck the mutex as we are done with the shared queue
-        pthread_mutex_unlock(&thread_pool->queue_mutex);
-
-        // If there is a task, then handle the connection
-        if (task != NULL) {
-            handle_connection(task->client_socket);
-            free(task);
+// Helper function to check if any task exists in any queue.
+// This must be called while the queue_mutex is locked.
+static int is_any_task_available(const ThreadPool *pool) {
+    for (int i = 0; i < PRIORITY_MAX; i++) {
+        if (pool->priority_queues[i].head != NULL) {
+            return 1;
         }
     }
+    return 0;
 }
 
 ThreadPool * thread_pool_create(const int thread_count) {
@@ -56,8 +33,10 @@ ThreadPool * thread_pool_create(const int thread_count) {
     }
 
     thread_pool->thread_count = thread_count;
-    thread_pool->task_queue_head = NULL;
-    thread_pool->task_queue_tail = NULL;
+    for (int i = 0; i < PRIORITY_MAX; i++) {
+        thread_pool->priority_queues[i].head = NULL;
+        thread_pool->priority_queues[i].tail = NULL;
+    }
     thread_pool->shutdown = 0;
 
     // Allocate memory for thread IDs
@@ -85,7 +64,14 @@ ThreadPool * thread_pool_create(const int thread_count) {
     return thread_pool;
 }
 
-void thread_pool_add_task(ThreadPool *thread_pool, const int client_socket) {
+void thread_pool_add_task(ThreadPool *thread_pool, const int client_socket, const int priority) {
+    // Validate the incoming priority
+    if (priority < PRIORITY_MIN || priority > PRIORITY_MAX) {
+        LOG_DEBUG("Invalid priority level %d received. Dropping task.", priority);
+        close(client_socket);
+    }
+
+    // Allocate the task
     Task *new_task = malloc(sizeof(Task));
     if (new_task == NULL) {
         perror("Malloc for new_task failed");
@@ -97,13 +83,16 @@ void thread_pool_add_task(ThreadPool *thread_pool, const int client_socket) {
     // Lock the mutex to safely add the task to the queue
     pthread_mutex_lock(&thread_pool->queue_mutex);
 
+    // Get the tasks priority queue
+    TaskQueue *task_queue = &thread_pool->priority_queues[priority - 1]; // Input is 1-16
+
     // Add to the tail of the queue
-    if (thread_pool->task_queue_tail == NULL) {
-        thread_pool->task_queue_head = new_task;
-        thread_pool->task_queue_tail = new_task;
+    if (task_queue->tail == NULL) {
+        task_queue->head = new_task;
+        task_queue->tail = new_task;
     } else {
-        thread_pool->task_queue_tail->next = new_task;
-        thread_pool->task_queue_tail = new_task;
+        task_queue->tail->next = new_task;
+        task_queue->tail = new_task;
     }
 
     // Signal one waiting worker thread that there is a new task
@@ -130,13 +119,62 @@ void thread_pool_destroy(ThreadPool *thread_pool) {
     free(thread_pool->threads);
     pthread_mutex_destroy(&thread_pool->queue_mutex);
     pthread_cond_destroy(&thread_pool->queue_cond);
+
     // Free any remaining tasks in the queue
-    Task *current_task = thread_pool->task_queue_head;
-    while (current_task != NULL) {
-        Task *temp = current_task;
-        current_task = current_task->next;
-        free(temp);
+    for (int i = 0; i < PRIORITY_MAX; i++) {
+        Task *current_task = thread_pool->priority_queues[i].head;
+        while (current_task != NULL) {
+            Task *temp = current_task;
+            current_task = current_task->next;
+            free(temp);
+        }
     }
     free(thread_pool);
     LOG_DEBUG("Thread pool destroyed successfully.");
+}
+
+static void* worker_thread_function(void *arg) {
+    ThreadPool *thread_pool = arg;
+    Task *task = NULL;
+
+    while (1) {
+        // Lock the mutex to safely access the task queue
+        pthread_mutex_lock(&thread_pool->queue_mutex);
+
+        // Wait on the condition variable if the queue is empty and shutdown is not requested
+        while (!is_any_task_available(thread_pool) && !thread_pool->shutdown) {
+            pthread_cond_wait(&thread_pool->queue_cond, &thread_pool->queue_mutex); // Auto unlocks the mutex
+        }
+
+        // If shutdown is requested and the queue is empty, exit the thread.
+        if (thread_pool->shutdown && is_any_task_available(thread_pool)) {
+            pthread_mutex_unlock(&thread_pool->queue_mutex);
+            // This will stop the worker thread and exit the loop
+            pthread_exit(NULL);
+        }
+
+        // Go through the queues based on priority
+        for (int i = PRIORITY_MAX - 1; i >= 0; i--) {
+            if (thread_pool->priority_queues[i].head != NULL) {
+                task = thread_pool->priority_queues[i].head;
+                thread_pool->priority_queues[i].head = task->next;
+
+                // If this was the last task in the queue update the tail
+                if (thread_pool->priority_queues[i].head == NULL) {
+                    thread_pool->priority_queues[i].tail = NULL;
+                }
+                break; // Stop searching as the task has been found
+            }
+        }
+
+        // Unluck the mutex as we are done with the shared queue
+        pthread_mutex_unlock(&thread_pool->queue_mutex);
+
+        // If there is a task, then handle the connection
+        if (task != NULL) {
+            handle_connection(task->client_socket);
+            free(task);
+            task = NULL; // Reset task for next loop
+        }
+    }
 }

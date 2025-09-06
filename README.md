@@ -43,12 +43,12 @@ The goal for the milestone is to create a server that works correctly and achiev
   - [X] Create a way to handle priorities.
   - [X] Test again and compare.
 
-- [ ] **8. Explore Multi-Stage Architecture:**
-  - [ ] Design and implement a new architecture with specialized thread pools.
-  - [ ] Acceptor Thread: A single thread whose only job is to `accept()` new connections and pass the socket to a queue.
-  - [ ] Dispatcher Threads: A small pool of threads that read and parse requests from the acceptor's queue and place them into the worker pool's priority queues.
-  - [ ] Worker Threads: The existing thread pool that now only performs the computation (`reverse_hashing`).
-  - [ ] Create a new experiment to measure if this separation provides a notable performance improvement over the current model.
+- [X] **8. Explore Multi-Stage Architecture:**
+  - [X] Design and implement a new architecture with specialized thread pools.
+  - [X] Acceptor Thread: A single thread whose only job is to `accept()` new connections and pass the socket to a queue.
+  - [X] Dispatcher Threads: A small pool of threads that read and parse requests from the acceptor's queue and place them into the worker pool's priority queues.
+  - [X] Worker Threads: The existing thread pool that now only performs the computation (`reverse_hashing`).
+  - [X] Create a new experiment to measure if this separation provides a notable performance improvement over the current model.
 
 - [ ] **9. Implement Caching Mechanism:**
   - [ ] Design and implement a thread-safe hash map to store `(hash, answer)` pairs.

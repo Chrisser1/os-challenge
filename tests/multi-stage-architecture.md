@@ -43,4 +43,4 @@ To stress the connection-handling part of the server, we will use a benchmark co
 
 ### Test (Multi-Stage Architecture)
 
-* **Average Score**: `[TODO: Fill in after running the test]`
+* **Average Score**: `73171.88 - 73171.88`

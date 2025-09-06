@@ -9,17 +9,62 @@
 #include <netinet/in.h>
 
 #include "server.h"
+
+#include "dispatcher_queue.h"
 #include "hashing.h"
 #include "protocol.h"
 #include "thread-pool.h"
 #include "common/logging.h"
 
+#define NUM_DISPATCHER_THREADS 4
 #define NUM_WORKER_THREADS 16
+
+void* dispatcher_thread_function(void *args) {
+    const DispatcherArgs *d_args = args;
+    DispatcherQueue *d_queue = d_args->dispatcher_queue;
+    ThreadPool *w_pool = d_args->worker_pool;
+
+    while(1) {
+        // Pull a socket from the acceptor's queue. This blocks.
+        const int client_socket = dispatcher_queue_pull(d_queue);
+        if (client_socket == -1) { // Shutdown signal
+            break;
+        }
+
+        LOG_DEBUG("Dispatcher thread handling socket %d. Reading and parsing...", client_socket);
+
+        char request_buffer[REQUEST_PACKET_SIZE];
+        ssize_t total_bytes_read = 0;
+        while (total_bytes_read < REQUEST_PACKET_SIZE) {
+            const ssize_t bytes_read = read(client_socket, request_buffer + total_bytes_read, REQUEST_PACKET_SIZE - total_bytes_read);
+            if (bytes_read <= 0) {
+                LOG_DEBUG("Dispatcher failed to read from socket %d or client disconnected.", client_socket);
+                close(client_socket);
+                goto next_dispatch;
+            }
+            total_bytes_read += bytes_read;
+        }
+
+        request_packet_t request;
+        parse_request(request_buffer, &request);
+
+        // Add the fully formed task to the worker pool
+        thread_pool_add_task(w_pool, client_socket, &request);
+
+        next_dispatch:;
+    }
+    return NULL;
+}
 
 void start_server(const int port) {
     int server_fd, new_socket;
     struct sockaddr_in address;
     int addr_len = sizeof(address);
+
+    DispatcherQueue *dispatcher_queue = dispatcher_queue_create();
+    ThreadPool *worker_pool = thread_pool_create(NUM_WORKER_THREADS);
+    DispatcherArgs dispatcher_args = { dispatcher_queue, worker_pool };
+    pthread_t dispatchers[NUM_DISPATCHER_THREADS];
 
     // Create a socket
     // AF_INET: Address family for IPv4
@@ -50,11 +95,9 @@ void start_server(const int port) {
         exit(EXIT_FAILURE);
     }
 
-    // Create the thread pool
-    ThreadPool *thread_pool = thread_pool_create(NUM_WORKER_THREADS);
-    if (thread_pool == NULL) {
-        fprintf(stderr, "Failed to create thread pool. Exiting.\n");
-        exit(EXIT_FAILURE);
+    // --- Start the dispatcher threads ---
+    for (int i = 0; i < NUM_DISPATCHER_THREADS; i++) {
+        pthread_create(&dispatchers[i], NULL, dispatcher_thread_function, &dispatcher_args);
     }
 
     printf("Server is listening on port %d. Waiting for connections...\n", port);
@@ -69,27 +112,8 @@ void start_server(const int port) {
             exit(EXIT_FAILURE);
         }
 
-        LOG_DEBUG("Connection accepted on socket %d. Reading and parsing request...", new_socket);
-
-        char request_buffer[REQUEST_PACKET_SIZE];
-        ssize_t total_bytes_read = 0;
-        while (total_bytes_read < REQUEST_PACKET_SIZE) {
-            const ssize_t bytes_read = read(new_socket, request_buffer + total_bytes_read, REQUEST_PACKET_SIZE - total_bytes_read);
-            if (bytes_read <= 0) {
-                LOG_DEBUG("Failed to read from socket %d or client disconnected.", new_socket);
-                close(new_socket);
-                goto next_connection;
-            }
-            total_bytes_read += bytes_read;
-        }
-
-        request_packet_t request;
-        parse_request(request_buffer, &request);
-
-        // Add the task to the pool with the fully parsed request
-        thread_pool_add_task(thread_pool, new_socket, &request);
-
-        next_connection:;
+        LOG_DEBUG("Acceptor thread accepted socket %d. Pushing to dispatcher queue.", new_socket);
+        dispatcher_queue_push(dispatcher_queue, new_socket);
     }
 }
 

@@ -8,8 +8,6 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-#include "common/logging.h"
-
 DispatcherQueue * dispatcher_queue_create() {
     DispatcherQueue *queue = malloc(sizeof(DispatcherQueue));
     if (!queue) {

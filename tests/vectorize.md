@@ -36,4 +36,4 @@ To isolate the performance of the CPU-bound hashing loop, the benchmark must be 
 * **Average Score**: `[TODO: Fill in after running the test]`
 
 ### Test (Vectorized Hashing Loop)
-* **Average Score**: `20877.14`
+* **Average Score**: `247483.38`

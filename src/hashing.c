@@ -8,7 +8,6 @@
 
 #include <endian.h>
 #include <string.h>
-#include <immintrin.h>
 
 uint64_t reverse_hashing(const request_packet_t *request) {
     for (uint64_t i = request->start; i < request->end; ++i) {

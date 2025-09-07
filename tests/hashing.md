@@ -53,8 +53,3 @@ This test uses zero repetition to nullify the result cache, forcing overlapping 
 * **Test 1 (Normal):** `2366.10`
 * **Test 2 (High Repetition):** `703.74`
 * **Test 3 (High Difficulty):** `12524.92`
-
-### Test (Multi-Stage with Caching)
-* **Test 1 (Normal):** `[TODO]`
-* **Test 2 (High Repetition):** `[TODO]`
-* **Test 3 (High Difficulty):** `[TODO]`

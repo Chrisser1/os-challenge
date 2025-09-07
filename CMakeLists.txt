@@ -4,7 +4,7 @@ project(os_challenge C)
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 
-add_compile_options(-Wall -Wextra -g -O2)
+add_compile_options(-Wall -Wextra -g -O2 -mavx2)
 
 find_package(OpenSSL REQUIRED)
 find_package(Threads REQUIRED)

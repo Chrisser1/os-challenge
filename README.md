@@ -50,12 +50,11 @@ The goal for the milestone is to create a server that works correctly and achiev
   - [X] Worker Threads: The existing thread pool that now only performs the computation (`reverse_hashing`).
   - [X] Create a new experiment to measure if this separation provides a notable performance improvement over the current model.
 
-- [ ] **9. Implement Caching Mechanism:**
-  - [ ] Result Cache: Design and implement a thread-safe hash map to store `(hash, answer)` pairs for repeated requests.
-    - [ ] Modify `handle_connection` to check the cache before hashing.
-    - [ ] On a "cache miss," add the new result to the cache.
-    - [ ] Run benchmarks (as defined in Experiment 4) to measure the impact.
-  - [ ] (Advanced) Search Space Cache: Explore methods to track number ranges that have already been computed to avoid redundant hashing work for different requests that cover overlapping search spaces.
+- [X] **9. Implement Caching Mechanism:**
+  - [X] Result Cache: Design and implement a thread-safe hash map to store `(hash, answer)` pairs for repeated requests.
+    - [X] Modify `handle_connection` to check the cache before hashing.
+    - [X] On a "cache miss," add the new result to the cache.
+    - [X] Run benchmarks (as defined in Experiment 4) to measure the impact.
 
 - [ ] **10. Explore Vectorization (SIMD):**
   - [ ] Research how to use CPU SIMD intrinsics (like AVX or SSE) in C.

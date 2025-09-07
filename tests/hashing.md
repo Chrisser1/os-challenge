@@ -45,9 +45,9 @@ This test uses zero repetition to nullify the result cache, forcing overlapping 
 ## 4. Results
 
 ### Baseline (Multi-Stage, No Caching)
-* **Test 1 (Normal):** `[TODO]`
-* **Test 2 (High Repetition):** `[TODO]`
-* **Test 3 (High Difficulty):** `[TODO]`
+* **Test 1 (Normal):** `2979.26`
+* **Test 2 (High Repetition):** `3070.72`
+* **Test 3 (High Difficulty):** `196756.88`
 
 ### Test (Multi-Stage with Caching)
 * **Test 1 (Normal):** `2366.10`

@@ -22,16 +22,18 @@ SERVER=192.168.101.10
 PORT=5003
 # Seed for the random number generator (using a fixed seed makes tests repeatable)
 SEED=1234
+# Add to seed, makes the seed for run n equal to seed + n (0 = false and 1 = true)
+ADD_TO_SEED=1
 # Total number of requests per run
 TOTAL=200
 # Start value for the number range
 START=1
 # Difficulty
-DIFFICULTY=100000
+DIFFICULTY=500000
 # Repetition probability
 REP_PROB_PERCENT=0
 # Delay between requests in microseconds (lower value = more stress on the server)
-DELAY_US=1000
+DELAY_US=10000
 # Lambda for priority levels (0 = priorities disabled) MAX = 16
 PRIO_LAMBDA=0
 
@@ -60,8 +62,14 @@ for i in $(seq 1 $NUM_RUNS)
 do
     echo "Running test $i of $NUM_RUNS..."
 
+    CURRENT_SEED=$SEED
+    if [ "$ADD_TO_SEED" -eq 1 ]; then
+        # If enabled, create a unique seed for each run.
+        CURRENT_SEED=$((SEED + i))
+    fi
+
     # Run the client and capture its full output
-    CLIENT_OUTPUT=$($CLIENT_PATH $SERVER $PORT $SEED $TOTAL $START $DIFFICULTY $REP_PROB_PERCENT $DELAY_US $PRIO_LAMBDA)
+    CLIENT_OUTPUT=$($CLIENT_PATH $SERVER $PORT $CURRENT_SEED $TOTAL $START $DIFFICULTY $REP_PROB_PERCENT $DELAY_US $PRIO_LAMBDA)
 
     # Check if the client run was successful by looking for the "Results" line
     if [[ "$CLIENT_OUTPUT" == *"Results:"* ]]; then

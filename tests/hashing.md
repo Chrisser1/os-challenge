@@ -18,6 +18,7 @@ We will use three distinct tests to isolate the benefits of each optimization st
 #### TEST 1 (Baseline)
 This test uses a standard configuration to establish a baseline for the non-optimized, multi-stage server.
 * **Number of Runs (`NUM_RUNS`)**: `50`
+* **Seed (`ADD_TO_SEED` need to be set)**: `1`
 * **Repetition Probability (`REP_PROB_PERCENT`)**: `20`
 * **Difficulty (`DIFFICULTY`)**: `100000`
 * **Total Requests (`TOTAL`)**: `200`
@@ -26,14 +27,16 @@ This test uses a standard configuration to establish a baseline for the non-opti
 #### TEST 2 (Result Cache Test)
 This test is designed to maximize cache hits, highlighting the benefit of the result cache.
 * **Number of Runs (`NUM_RUNS`)**: `50`
+* * **Seed (`ADD_TO_SEED` need to be set)**: `1`
 * **Repetition Probability (`REP_PROB_PERCENT`)**: `90`
-* **Difficulty (`DIFFICULTY`)**: `250000` (Higher to make cache misses very expensive)
+* **Difficulty (`DIFFICULTY`)**: `100000`
 * **Total Requests (`TOTAL`)**: `200`
 * **Request Delay (`DELAY_US`)**: `1000`
 
 #### TEST 3 (Search Space Cache Test)
 This test uses zero repetition to nullify the result cache, forcing overlapping search ranges to highlight the benefit of the search space cache.
 * **Number of Runs (`NUM_RUNS`)**: `50`
+* **Seed (`ADD_TO_SEED` need to be set)**: `1`
 * **Repetition Probability (`REP_PROB_PERCENT`)**: `0`
 * **Difficulty (`DIFFICULTY`)**: `500000` (Very high to ensure significant overlap)
 * **Total Requests (`TOTAL`)**: `200`
@@ -47,11 +50,11 @@ This test uses zero repetition to nullify the result cache, forcing overlapping 
 * **Test 3 (High Difficulty):** `[TODO]`
 
 ### Test (Multi-Stage with Caching)
-* **Test 1 (Normal):** `[TODO]`
-* **Test 2 (High Repetition):** `[TODO]`
-* **Test 3 (High Difficulty):** `[TODO]`
+* **Test 1 (Normal):** `2366.10`
+* **Test 2 (High Repetition):** `703.74`
+* **Test 3 (High Difficulty):** `12524.92`
 
-### Test (Multi-Stage with Caching and )
+### Test (Multi-Stage with Caching)
 * **Test 1 (Normal):** `[TODO]`
 * **Test 2 (High Repetition):** `[TODO]`
 * **Test 3 (High Difficulty):** `[TODO]`

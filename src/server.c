@@ -9,7 +9,7 @@
 #include <netinet/in.h>
 
 #include "server.h"
-
+#include "cache.h"
 #include "dispatcher_queue.h"
 #include "hashing.h"
 #include "protocol.h"
@@ -18,6 +18,9 @@
 
 #define NUM_DISPATCHER_THREADS 4
 #define NUM_WORKER_THREADS 16
+#define CACHE_CAPACITY 1024
+
+static Cache* g_cache;
 
 void* dispatcher_thread_function(void *args) {
     const DispatcherArgs *d_args = args;
@@ -60,6 +63,14 @@ void start_server(const int port) {
     int server_fd, new_socket;
     struct sockaddr_in address;
     int addr_len = sizeof(address);
+
+    // Create the cache
+    g_cache = cache_create(CACHE_CAPACITY);
+    if (g_cache == NULL) {
+        fprintf(stderr, "Failed to create cache cache. Exiting.\n");
+        exit(EXIT_FAILURE);
+    }
+    LOG_DEBUG("Cache created with %d capacity.", CACHE_CAPACITY);
 
     DispatcherQueue *dispatcher_queue = dispatcher_queue_create();
     ThreadPool *worker_pool = thread_pool_create(NUM_WORKER_THREADS);
@@ -120,9 +131,27 @@ void start_server(const int port) {
 void handle_connection(const int client_socket, const request_packet_t *request) {
     LOG_DEBUG("Worker thread handling request: start=%lu, end=%lu, socket=%d", request->start, request->end, client_socket);
 
+    uint64_t answer;
+
+    // Check the cache
+    const int found_in_cache = cache_get(g_cache, request->hash, &answer);
+
+    if (found_in_cache) {
+        // --- CACHE HIT ---
+        LOG_DEBUG("Cache hit for request on socket %d.", client_socket);
+    } else {
+        // --- CACHE MISS ---
+        LOG_DEBUG("Cache miss for request on socket %d. Performing hash...", client_socket);
+        answer = reverse_hashing(request);
+
+        // Store the new result in the cache for next time.
+        cache_put(g_cache, request->hash, answer);
+        LOG_DEBUG("Stored new answer in cache for socket %d.", client_socket);
+    }
+
     // Create and send the response
     response_packet_t response;
-    response.answer = reverse_hashing(request);
+    response.answer = answer;
 
     const int response_size = 8;
     char response_buffer[response_size];

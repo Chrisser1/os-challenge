@@ -22,7 +22,9 @@ add_executable(server
         src/thread-pool.c
         src/thread-pool.h
         src/dispatcher_queue.c
-        src/dispatcher_queue.h)
+        src/dispatcher_queue.h
+        src/cache.c
+        src/cache.h)
 
 target_include_directories(server PRIVATE
     src

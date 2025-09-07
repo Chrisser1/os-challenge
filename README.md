@@ -51,10 +51,11 @@ The goal for the milestone is to create a server that works correctly and achiev
   - [X] Create a new experiment to measure if this separation provides a notable performance improvement over the current model.
 
 - [ ] **9. Implement Caching Mechanism:**
-  - [ ] Design and implement a thread-safe hash map to store `(hash, answer)` pairs.
-  - [ ] Modify the `handle_connection` logic to check the cache before performing the reverse-hashing search.
-  - [ ] On a "cache miss," add the newly computed answer to the cache.
-  - [ ] Run the benchmark tests as defined in `experiment-caching.md` to measure the performance impact.
+  - [ ] Result Cache: Design and implement a thread-safe hash map to store `(hash, answer)` pairs for repeated requests.
+    - [ ] Modify `handle_connection` to check the cache before hashing.
+    - [ ] On a "cache miss," add the new result to the cache.
+    - [ ] Run benchmarks (as defined in Experiment 4) to measure the impact.
+  - [ ] (Advanced) Search Space Cache: Explore methods to track number ranges that have already been computed to avoid redundant hashing work for different requests that cover overlapping search spaces.
 
 - [ ] **10. Explore Vectorization (SIMD):**
   - [ ] Research how to use CPU SIMD intrinsics (like AVX or SSE) in C.

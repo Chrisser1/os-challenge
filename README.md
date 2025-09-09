@@ -56,8 +56,7 @@ The goal for the milestone is to create a server that works correctly and achiev
     - [X] On a "cache miss," add the new result to the cache.
     - [X] Run benchmarks (as defined in Experiment 4) to measure the impact.
 
-- [X] **10. Explore Vectorization (SIMD):**
-  - [X] Research how to use CPU SIMD intrinsics (like AVX or SSE) in C.
+- [X] **10. Explore Unrolled Hashing Loop:**
   - [X] Create a new experiment to rewrite the core hashing loop to test multiple numbers simultaneously.
-  - [X] Measure the performance gain of the vectorized hashing function compared to the standard loop.
+  - [X] Measure the performance gain of the unrolled hashing function compared to the standard loop.
 

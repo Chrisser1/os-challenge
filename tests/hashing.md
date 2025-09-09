@@ -1,16 +1,15 @@
 # Experiment 4: Performance of Advanced Hashing Optimizations
 
 ## 1. Goal
-To evaluate the performance impact of two advanced hashing strategies: a result cache for repeated requests and a search space cache to avoid redundant computation on overlapping ranges.
+To evaluate the performance impact of one hashing strategy, a result cache for repeated requests.
 
 ## 2. Hypothesis
-Implementing a result cache will provide a massive performance gain in workloads with high repetition probability. The search space cache will provide a secondary, smaller performance gain in workloads with low repetition but high difficulty, where different requests are likely to have overlapping search ranges. A combination of both will provide the most robust performance across various scenarios.
+Implementing a result cache will provide a massive performance gain in workloads with high repetition probability.
 
 ## 3. Methodology
 
 ### Optimization Strategies
-1.  **Result Cache:** A thread-safe hash map storing `(hash, answer)` pairs will be implemented. On a "cache hit," the expensive hashing computation is skipped entirely.
-2.  **Search Space Cache:** A data structure (e.g., an interval tree or a sorted list of disjoint intervals) will be used to keep track of number ranges that have already been fully computed. Before starting a brute-force search, the `reverse_hashing` function will subtract any known computed ranges from its target search space.
+**Result Cache:** A thread-safe hash map storing `(hash, answer)` pairs will be implemented. On a "cache hit," the expensive hashing computation is skipped entirely.
 
 ### Test Configuration
 We will use three distinct tests to isolate the benefits of each optimization strategy.
@@ -34,7 +33,7 @@ This test is designed to maximize cache hits, highlighting the benefit of the re
 * **Request Delay (`DELAY_US`)**: `1000`
 
 #### TEST 3 (Search Space Cache Test)
-This test uses zero repetition to nullify the result cache, forcing overlapping search ranges to highlight the benefit of the search space cache.
+This test uses zero repetition to try to nullify the result cache.
 * **Number of Runs (`NUM_RUNS`)**: `50`
 * **Seed (`ADD_TO_SEED` need to be set)**: `1`
 * **Repetition Probability (`REP_PROB_PERCENT`)**: `0`

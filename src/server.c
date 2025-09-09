@@ -18,7 +18,7 @@
 
 #define NUM_DISPATCHER_THREADS 4
 #define NUM_WORKER_THREADS 16
-#define CACHE_CAPACITY 1024
+#define CACHE_CAPACITY 2048
 
 static Cache* g_cache;
 

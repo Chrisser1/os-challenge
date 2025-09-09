@@ -33,7 +33,7 @@ To isolate the performance of the CPU-bound hashing loop, the benchmark must be 
 ## 4. Results
 
 ### Baseline (Scalar Hashing Loop)
-* **Average Score**: `224211.88`
+* **Average Score**: `224211.88` 365368.50
 
 ### Test (Vectorized Hashing Loop)
 * **Average Score**: `247483.38`

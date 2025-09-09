@@ -4,7 +4,7 @@ project(os_challenge C)
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 
-add_compile_options(-Wall -Wextra -g -O2 -march=native)
+add_compile_options(-Wall -Wextra -g -O3 -march=native)
 
 find_package(OpenSSL REQUIRED)
 find_package(Threads REQUIRED)
@@ -24,7 +24,8 @@ add_executable(server
         src/dispatcher_queue.c
         src/dispatcher_queue.h
         src/cache.c
-        src/cache.h)
+        src/cache.h
+)
 
 target_include_directories(server PRIVATE
     src

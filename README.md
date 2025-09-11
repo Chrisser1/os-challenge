@@ -60,3 +60,10 @@ The goal for the milestone is to create a server that works correctly and achiev
   - [X] Create a new experiment to rewrite the core hashing loop to test multiple numbers simultaneously.
   - [X] Measure the performance gain of the unrolled hashing function compared to the standard loop.
 
+- [ ] **11. Reduce Lock Contention:**
+  - [ ] Investigate and implement more granular locking for the priority queues in the thread pool.
+  - [ ] Explore lock-free data structures for the dispatcher queue.
+
+- [ ] **12. Improve Memory Management:**
+  - [ ] Implement a memory pool for frequently allocated objects (like `Task` and `SocketNode`) to reduce `malloc` overhead.
+  - [ ] Profile memory usage to identify and fix potential memory leaks.

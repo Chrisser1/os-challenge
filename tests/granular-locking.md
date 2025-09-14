@@ -42,7 +42,7 @@ A high number of worker threads and a low request delay will create this scenari
 
 ### Baseline (Global Lock)
 
-* **Average Score**: `TBD`
+* **Average Score**: `302772.54`
 
 ### Test (Granular Locks)
 

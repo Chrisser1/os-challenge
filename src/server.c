@@ -100,7 +100,7 @@ void start_server(const int port) {
     }
 
     // Listen for Incoming Connections
-    // 10 is the backlog, the maximum number of pending connections queued for acceptance.
+    // 100 is the backlog, the maximum number of pending connections queued for acceptance.
     if (listen(server_fd, 100) < 0) {
         perror("listen");
         exit(EXIT_FAILURE);

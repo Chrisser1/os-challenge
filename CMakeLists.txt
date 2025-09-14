@@ -19,7 +19,7 @@ add_executable(server
         src/hashing.c
         src/hashing.h
         src/common/logging.h
-        src/thread-pool.c
+        src/thread-pool.cv
         src/thread-pool.h
         src/dispatcher_queue.c
         src/dispatcher_queue.h

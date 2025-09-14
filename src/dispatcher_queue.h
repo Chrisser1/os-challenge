@@ -31,6 +31,7 @@ void dispatcher_queue_destroy(DispatcherQueue* queue);
 
 /**
  * @brief Pushes a new client socket onto the queue. (Producer)
+ *
  * This is called by the acceptor thread.
  * @param queue The dispatcher queue.
  * @param client_socket The new socket file descriptor.

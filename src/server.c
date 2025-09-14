@@ -17,7 +17,7 @@
 #include "common/logging.h"
 
 #define NUM_DISPATCHER_THREADS 4
-#define NUM_WORKER_THREADS 16
+#define NUM_WORKER_THREADS 32
 #define CACHE_CAPACITY 2048
 
 static Cache* g_cache;
@@ -100,8 +100,8 @@ void start_server(const int port) {
     }
 
     // Listen for Incoming Connections
-    // 100 is the backlog, the maximum number of pending connections queued for acceptance.
-    if (listen(server_fd, 100) < 0) {
+    // 2000 is the backlog, the maximum number of pending connections queued for acceptance.
+    if (listen(server_fd, 2000) < 0) {
         perror("listen");
         exit(EXIT_FAILURE);
     }

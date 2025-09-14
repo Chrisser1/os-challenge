@@ -28,12 +28,13 @@ typedef struct {
 } TaskQueue;
 
 typedef struct {
-    pthread_t *threads;                      // Array of worker threads
-    TaskQueue priority_queues[PRIORITY_MAX]; // An array of 16 queue that represent priority 1-16
-    pthread_mutex_t queue_mutex;             // Mutex to protect the queue
-    pthread_cond_t queue_cond;               // Condition variable to signal new tasks
-    int shutdown;                            // Flag to signal threads to exit
-    int thread_count;                        // Number of threads in the pool
+    pthread_t *threads;                          // Array of worker threads.
+    TaskQueue priority_queues[PRIORITY_MAX];     // An array of 16 queue that represent priority 1-16.
+    pthread_mutex_t queue_mutexes[PRIORITY_MAX]; // Mutex to protect a priority queue (One pr. priority).
+    pthread_mutex_t queue_mutex;                 // Mutex to protect all queues.
+    pthread_cond_t queue_cond;                   // Condition variable to signal new tasks.
+    int shutdown;                                // Flag to signal threads to exit.
+    int thread_count;                            // Number of threads in the pool.
 } ThreadPool;
 
 

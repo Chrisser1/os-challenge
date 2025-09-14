@@ -25,15 +25,15 @@ SEED=1234
 # Add to seed, makes the seed for run n equal to seed + n (0 = false and 1 = true)
 ADD_TO_SEED=1
 # Total number of requests per run
-TOTAL=200
+TOTAL=1000
 # Start value for the number range
 START=1
 # Difficulty
-DIFFICULTY=500000
+DIFFICULTY=100000
 # Repetition probability
 REP_PROB_PERCENT=0
 # Delay between requests in microseconds (lower value = more stress on the server)
-DELAY_US=1000
+DELAY_US=100
 # Lambda for priority levels (0 = priorities disabled) MAX = 16
 PRIO_LAMBDA=1.0
 

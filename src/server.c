@@ -17,7 +17,8 @@
 #include "common/logging.h"
 
 #define NUM_DISPATCHER_THREADS 4
-#define NUM_WORKER_THREADS 32
+#define NUM_WORKER_THREADS 4
+#define NUM_HASHING_THREADS 12
 #define CACHE_CAPACITY 2048
 
 static Cache* g_cache;
@@ -142,7 +143,7 @@ void handle_connection(const int client_socket, const request_packet_t *request)
     } else {
         // --- CACHE MISS ---
         LOG_DEBUG("Cache miss for request on socket %d. Performing hash...", client_socket);
-        answer = reverse_hashing(request);
+        answer = reverse_hashing(request, NUM_HASHING_THREADS);
 
         // Store the new result in the cache for next time.
         cache_put(g_cache, request->hash, answer);

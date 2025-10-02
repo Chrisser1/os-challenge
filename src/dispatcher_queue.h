@@ -2,8 +2,8 @@
 // Created by chris on 9/6/25.
 //
 
-#ifndef OS_CHALLENGE_DISPATCHER_QUEUE_H
-#define OS_CHALLENGE_DISPATCHER_QUEUE_H
+#pragma once
+
 #include "thread-pool.h"
 
 // A node in the linked list for the dispatcher queue
@@ -46,5 +46,3 @@ void dispatcher_queue_push(DispatcherQueue* queue, int client_socket);
  * @return The client socket file descriptor, or -1 on shutdown.
  */
 int dispatcher_queue_pull(DispatcherQueue* queue);
-
-#endif //OS_CHALLENGE_DISPATCHER_QUEUE_H

@@ -2,8 +2,7 @@
 // Created by chris on 9/4/25.
 //
 
-#ifndef OS_CHALLENGE_LOGGING_H
-#define OS_CHALLENGE_LOGGING_H
+#pragma once
 
 #include <stdio.h>
 
@@ -16,5 +15,3 @@
 #else
     #define LOG_DEBUG(fmt, ...)
 #endif
-
-#endif //OS_CHALLENGE_LOGGING_H

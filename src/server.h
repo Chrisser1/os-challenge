@@ -2,8 +2,8 @@
 // Created by chris on 9/2/25.
 //
 
-#ifndef OS_CHALLENGE_SERVER_H
-#define OS_CHALLENGE_SERVER_H
+#pragma once
+
 #include "protocol.h"
 
 /**
@@ -22,5 +22,3 @@ void start_server(int port);
  * @param request The request from the client
  */
 void handle_connection(int client_socket, const request_packet_t *request);
-
-#endif //OS_CHALLENGE_SERVER_H

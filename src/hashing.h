@@ -2,8 +2,7 @@
 // Created by chris on 9/4/25.
 //
 
-#ifndef OS_CHALLENGE_HASHING_H
-#define OS_CHALLENGE_HASHING_H
+#pragma once
 
 #include <stdint.h>
 
@@ -38,5 +37,3 @@ static void set_found_answer(HashWorkerArgs *args, uint64_t answer);
  * @return The reverse hashed uint64_t
  */
 uint64_t reverse_hashing(const request_packet_t* request, int num_hashing_threads);
-
-#endif //OS_CHALLENGE_HASHING_Hv

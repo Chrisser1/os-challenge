@@ -2,8 +2,7 @@
 // Created by chris on 9/2/25.
 //
 
-#ifndef OS_CHALLENGE_PROTOCOL_H
-#define OS_CHALLENGE_PROTOCOL_H
+#pragma once
 
 #include <stdint.h>
 
@@ -44,5 +43,3 @@ void parse_request(const char *buffer, request_packet_t *packet);
  * @param buffer A pointer to the 8-byte buffer to be sent over the network.
  */
 void create_response(const response_packet_t *packet, char *buffer);
-
-#endif //OS_CHALLENGE_PROTOCOL_H

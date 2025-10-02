@@ -2,10 +2,8 @@
 // Created by chris on 9/7/25.
 //
 
-#ifndef OS_CHALLENGE_CASHE_H
-#define OS_CHALLENGE_CASHE_H
+#pragma once
 
-#include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
 
@@ -61,5 +59,3 @@ int cache_get(Cache* cache, const uint8_t* key, uint64_t* value);
  * @param value The 64-bit answer to associate with the key.
  */
 void cache_put(Cache* cache, const uint8_t* key, uint64_t value);
-
-#endif //OS_CHALLENGE_CASHE_H

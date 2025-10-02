@@ -2,8 +2,7 @@
 // Created by chris on 9/4/25.
 //
 
-#ifndef OS_CHALLENGE_THREAD_POOL_H
-#define OS_CHALLENGE_THREAD_POOL_H
+#pragma once
 
 #include <pthread.h>
 
@@ -61,5 +60,3 @@ void thread_pool_add_task(ThreadPool* thread_pool, int client_socket, const requ
  * @param thread_pool The thread pool to destroy.
  */
 void thread_pool_destroy(ThreadPool* thread_pool);
-
-#endif //OS_CHALLENGE_THREAD_POOL_H
